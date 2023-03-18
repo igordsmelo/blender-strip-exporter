@@ -1,16 +1,19 @@
-# Blender_StripExporter
-Blender add-on to export individual strips from your video edits.
+# Blender Strips Exporter
+Blender add-on to export each strip in VSE as an individual video file.
 **Tested on W11 running blender 3.4**
 
 
 ![img.png](img.png)
 
-# Install:
-1. download .py file
-2. open blender
-3. edit>preferences>add-ons>install
-4. selected .py file.
-5. toggle it on.
+
+## Installation
+
+To install the Strips Exporter add-on:
+
+1. Download the `strips_exporter.py` file from this repository.
+2. Open Blender and go to `Edit > Preferences > Add-ons`.
+3. Click the `Install...` button and select the file.
+4. Enable the Strips Exporter add-on by checking the box next to its name in Blender settings.
 
 ---
 
