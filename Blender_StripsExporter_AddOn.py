@@ -15,6 +15,12 @@ import os
 
 
 def strips_list():
+    """
+        Returns a list of strips in the current Blender scene.
+        Only includes strips that are within the preview range if preview range is turned on.
+        Returns:
+            list: A list of strips in the current Blender scene.
+    """
     strips = []
     video = bpy.context.scene
 
@@ -34,6 +40,14 @@ def strips_list():
 
 
 def main(context):
+    """
+        Exports each strip in the current Blender scene as a separate video.
+
+        Sets the start and end frames for rendering to match the start and end frames of each strip and then renders the animation. The resulting videos are saved to the same directory as the Blender file.
+
+        Args:
+            context: The current Blender context.
+    """
     video = bpy.context.scene
     video_strips = strips_list()
     # path where file will be saved. Change to whatever works best for you.
