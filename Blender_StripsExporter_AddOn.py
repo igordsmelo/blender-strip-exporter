@@ -10,8 +10,9 @@ bl_info = {
     "category": "Render Animation",
 }
 
-import bpy  # Blender python integration
 import os
+
+import bpy  # Blender python integration
 
 
 def strips_list():
@@ -43,7 +44,8 @@ def main(context):
     """
         Exports each strip in the current Blender scene as a separate video.
 
-        Sets the start and end frames for rendering to match the start and end frames of each strip and then renders the animation. The resulting videos are saved to the same directory as the Blender file.
+        Sets the start and end frames for rendering to match the start and end frames of each strip
+        and then renders the animation. The resulting videos are saved to the same directory as the Blender file.
 
         Args:
             context: The current Blender context.
