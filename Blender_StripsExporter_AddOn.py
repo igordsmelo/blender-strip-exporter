@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Strips Exporter",
     "author": "Igor Melo - @igordoodles",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
     "blender": (3, 4, 1),
     "location": "Render > Export/Render Individual Strips",
     "description": "Exports individual strips from video edits made on Blender.",
@@ -15,7 +15,7 @@ import os
 import bpy  # Blender python integration
 
 
-def strips_list():
+def strips_list() -> list:
     """
         Returns a list of strips in the current Blender scene.
         Only includes strips that are within the preview range if preview range is turned on.
@@ -30,7 +30,7 @@ def strips_list():
         # in case preview range is turned on. Will make sure only videos in range will be rendered.
         if video.use_preview_range:
             # checks if its in range. Both "more than preview start" as "less than preview end"
-            in_range = (video.frame_preview_start <= strip.frame_final_start) and\
+            in_range = (video.frame_preview_start <= strip.frame_final_start) and \
                        (strip.frame_final_end <= video.frame_preview_end + 1)
             # blender for some reason shows preview as being one less frame than strip. maybe a bug.
             # render inherits in_range condition. If one is True(that is, it is in range), so will be the other.
@@ -40,7 +40,7 @@ def strips_list():
     return strips
 
 
-def main(context):
+def main(context: object) -> None:
     """
         Exports each strip in the current Blender scene as a separate video.
 
@@ -56,13 +56,13 @@ def main(context):
     save_path = os.path.dirname(video.render.filepath) + '\\'
 
     for strip in video_strips:
-        # to make render limit itself to the start/end of a specific strip.
+        # makes render limit itself to the start/end of a specific strip.
         video.frame_start, video.frame_end = strip.frame_final_start, strip.frame_final_end
 
         file_counter = 0
         video_file_name = f'{save_path}{strip.name}.mp4'
 
-        # to avoid overwriting
+        # avoids overwriting an existing video.
         while os.path.exists(video_file_name):
             file_counter += 1
             video_file_name = f'{save_path}{strip.name}({file_counter}).mp4'
@@ -72,12 +72,14 @@ def main(context):
 
         video.render.filepath = video_file_name
 
-        # runs but only one vid
+        # runs but only one video
         ## bpy.ops.render.render('INVOKE_DEFAULT', animation=True, write_still=True)
-        bpy.ops.render.render(animation=True, write_still=True)  # adding eeee just to avoid running
+        # write_still avoids a bug. it isn't ideal but for now it works.
+        # TODO: find a way to render as Blender would natively. (No bugs, animation during render, etc.)
+        bpy.ops.render.render(animation=True, write_still=True)
         video.render.filepath = os.path.dirname(video.render.filepath) + '\\'
 
-    # THIS OPENS FOLDER WHEN EDITING HAS FINISHED. DELETE IF IT DOESNT WORK (OR IF U FIND IT CREEPY)
+    # opens export directory once rendering has ended.
     os.startfile(save_path)
 
 
@@ -86,12 +88,12 @@ class ExportStrips(bpy.types.Operator):
     bl_idname = "object.export_strips"
     bl_label = "Export Strips"
 
-    def execute(self, context):
+    def execute(self, context) -> set:
         main(context)
         return {'FINISHED'}
 
 
-class addon_ExportStrips(bpy.types.Panel):
+class Addon_ExportStrips(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
     bl_label = "Export Strips"
     bl_idname = "SCENE_PT_layout"
@@ -103,7 +105,7 @@ class addon_ExportStrips(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        # Create a simple row.
+        # Creates a simple row.
         layout.label(text=" Render Range:")
 
         col = layout.column()
@@ -113,9 +115,8 @@ class addon_ExportStrips(bpy.types.Panel):
         row.prop(scene, "frame_preview_start", text="Start Frame:")
         row.prop(scene, "frame_preview_end", text="End Frame:")
 
-        # Create two columns, by using a split layout.
+        # Creates two columns, by using a split layout.
         layout.label(text="")
-        # layout.label(text=" Path:")
         split = layout.split()
         col = split.column()
 
@@ -124,24 +125,27 @@ class addon_ExportStrips(bpy.types.Panel):
 
         # for the sake of spacing
         layout.label(text="")
-        layout.label(text=" Note: Blender FREEZES when exporting. It'll be fixed someday.")
+        layout.label(text="Note: Blender FREEZES when exporting.")
 
         # Big render button
         render_button = layout.row()
         render_button.scale_y = 3.0
-        ## render button showing the number of render-able videos in range. Not workin still.
+        ## render button showing number of videos to be rendered in range.
         render_button.operator("object.export_strips", text=f"Render all videos ({len(strips_list())})")
 
 
-# Register and add to the "object" menu (required to also use F3 search "Simple Object Operator" for quick access).
 def register():
+    """
+    Register and add to the "object" menu (required to also use F3 search "Simple Object Operator" for quick access).
+    """
     bpy.utils.register_class(ExportStrips)
-    bpy.utils.register_class(addon_ExportStrips)
+    bpy.utils.register_class(Addon_ExportStrips)
 
 
 def unregister():
+    """Unregistering it from menus."""
     bpy.utils.unregister_class(ExportStrips)
-    bpy.utils.unregister_class(addon_ExportStrips)
+    bpy.utils.unregister_class(Addon_ExportStrips)
 
 
 if __name__ == "__main__":
