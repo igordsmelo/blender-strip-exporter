@@ -1,3 +1,5 @@
+
+
 bl_info = {
     "name": "Strips Exporter",
     "author": "Igor Melo - @igordoodles",
