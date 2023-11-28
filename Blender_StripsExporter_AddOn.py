@@ -2,13 +2,14 @@
 
 bl_info = {
     "name": "Strips Exporter",
-    "author": "Igor Melo - @igordoodles",
-    "version": (0, 0, 3),
+    "author": "Igor Melo - igordsmelo.com",
+    "version": (0, 0, 4),
     "blender": (3, 4, 1),
-    "location": "Render > Export/Render Individual Strips",
+    "location": "Output Properties > Export Strips",
     "description": "Exports individual strips from video edits made on Blender.",
     "warning": "It will freeze when exporting.",
-    "doc_url": "",
+    "doc_url": "https://github.com/igordsmelo/blender-strip-exporter",
+    "tracker_url": "https://github.com/igordsmelo/blender-strip-exporter/issues",
     "category": "Render Animation",
 }
 
@@ -142,7 +143,6 @@ def register():
     """
     bpy.utils.register_class(ExportStrips)
     bpy.utils.register_class(Addon_ExportStrips)
-
 
 def unregister():
     """Unregistering it from menus."""
